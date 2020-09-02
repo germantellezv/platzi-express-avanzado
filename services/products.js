@@ -20,7 +20,7 @@ class ProductsService {
     return Promise.resolve(productsMocks)
   }
 
-  deleteProduct({productId}){
+  deleteProduct({productId, product}){
     return Promise.resolve(productsMocks)
   }
 
