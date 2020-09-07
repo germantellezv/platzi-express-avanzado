@@ -19,16 +19,15 @@ function productsApi(app) {
 
   router.get("/", async function (req, res, next) {
     const { tags } = req.query;
-    console.log(req.query);
-    console.log("tags", tags)
+    
     try {
       const products = await productService.getProducts({ tags });
       res.status(200).json({
         data: products,
         message: "products listed",
       });
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   });
 
