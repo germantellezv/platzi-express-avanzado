@@ -1,8 +1,17 @@
+const boom = require('boom')
 const path = require("path");
 const express = require("express");
 const bodyParser = require('body-parser')
 const productsRouter = require("./routes/views/products");
 const productsApiRouter = require('./routes/api/products')
+const authApiRouter = require('./routes/api/auth')
+const isRequestAjaxOrApi = require('./utils/isRequestAjaxOrApi')
+const {
+  logErrors,
+  wrapErrors,
+  clientErrorHandler,
+  errorHandler} = require('./utils/middlewares/errorsHandlers')
+
 
 // app
 const app = express();
@@ -19,12 +28,24 @@ app.set("view engine", "pug");
 
 // routes
 app.use("/products", productsRouter);
-app.use("/api/products", productsApiRouter)
+productsApiRouter(app)
+app.use("/api/auth", authApiRouter)
 
-// redirects
-/* app.get("/", function (req, rest) {
-  rest.redirect("/products")
-}) */
+app.use(function (req, res) {
+  if (isRequestAjaxOrApi(req)) {
+    const {
+      output: {statusCode, payload}
+    } = boom.notFound()
+    res.status(statusCode).json(payload)
+  }
+  res.status(404).render("404")
+})
+
+// error handlers
+app.use(logErrors)
+app.use(wrapErrors)
+app.use(clientErrorHandler)
+app.use(errorHandler)
 
 const PORT = 3000;
 app.listen(PORT, function () {
