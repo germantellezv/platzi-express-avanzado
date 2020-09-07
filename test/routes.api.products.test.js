@@ -14,7 +14,7 @@ describe("routes - api - products", function () {
     })
     const request = testServer(route)
 
-    describe("GET /products", function () {
+    describe("GET /products", function() {
         it("should respond with status 200", function (done) {
             request.get("/api/products").expect(200, done)
         })
